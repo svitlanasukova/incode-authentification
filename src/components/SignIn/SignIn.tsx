@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
+import axios from '../../api/axios';
 
 import styles from './SignIn.module.scss';
 import {
@@ -13,17 +14,56 @@ import {
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { signInSchema } from '../../schemas';
+import { useDispatch } from 'react-redux';
+import { setToken } from '../../store/authentication-slice';
+import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIsSignUp }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       userName: '',
       password: ''
     },
     validationSchema: signInSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post(
+          '/auth/login',
+          JSON.stringify({
+            username: values.userName,
+            password: values.password
+          }),
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        if (response.status === 201) {
+          dispatch(setToken(response.data));
+          console.log(response.data);
+          setError('');
+          navigate('/');
+        }
+      } catch (error) {
+        const err = error as AxiosError;
+        if (!err?.response) {
+          setError('No server response.');
+        } else if (err.response.status === 404) {
+          setError('User not found');
+        } else if (err.response.status === 401) {
+          setError('Invalid username or password');
+        } else {
+          setError('Signing in failed!');
+        }
+      }
     }
   });
   const handleClickShowPassword = () => {
@@ -38,6 +78,7 @@ const SignIn: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIs
   return (
     <div className={styles.signin}>
       <h1>Sign In</h1>
+      {error && <p className={styles.error}>{error}</p>}
       <form autoComplete="off" onSubmit={formik.handleSubmit}>
         <div className={styles.field}>
           <InputLabel htmlFor="userName">User Name</InputLabel>

@@ -51,6 +51,7 @@ const SignUp: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIs
         if (response.status === 201) {
           dispatch(setUser(response.data));
           onSetIsSignUp(false);
+          setError('');
         }
       } catch (error) {
         const err = error as AxiosError;
