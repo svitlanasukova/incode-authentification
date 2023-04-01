@@ -1,9 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-  root: {
-    borderRadius: 0
-  },
   typography: {
     fontFamily: 'Montserrat',
     h1: {
@@ -19,11 +16,48 @@ const theme = createTheme({
     }
   },
   palette: {
+    mode: 'dark',
     primary: {
       main: '#539713'
     },
-    text: {
-      primary: '#FFFFFF'
+    background: {
+      default: '#ffffff'
+    }
+  },
+  components: {
+    MuiInputLabel: {
+      defaultProps: {
+        sx: {
+          fontSize: '14px',
+          marginBottom: '5.5px'
+        }
+      }
+    },
+    MuiOutlinedInput: {
+      defaultProps: {
+        sx: {
+          fontSize: '14px',
+          marginBottom: '5.5px'
+        }
+      }
+    },
+    MuiIconButton: {
+      defaultProps: {
+        sx: {
+          padding: '2px',
+          marginBottom: '6px'
+        }
+      }
+    },
+    MuiButton: {
+      defaultProps: {
+        sx: {
+          padding: '9.5px 16px',
+          fontWeight: 600,
+          fontSize: '16px',
+          lineHeight: '155%'
+        }
+      }
     }
   }
 });

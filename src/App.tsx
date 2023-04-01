@@ -4,7 +4,7 @@ import HomePage from './pages/HomePage';
 import RequireAuth from './pages/RequireAuth';
 import AuthPage from './pages/AuthPage';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <Routes>
       <Route element={<RequireAuth />}>

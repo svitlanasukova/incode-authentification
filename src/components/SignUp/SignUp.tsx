@@ -1,6 +1,5 @@
-import React, { ErrorInfo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
-import axios from '../../api/axios';
 
 import styles from './SignUp.module.scss';
 import {
@@ -11,15 +10,20 @@ import {
   InputAdornment,
   InputLabel
 } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { signUpSchema } from '../../schemas';
-import { AxiosError } from 'axios';
+import { useDispatch } from 'react-redux';
+import { signUp } from '../../store/authentification-actions';
+import { useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store';
 
 const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSignIn }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState('');
+  const error = useSelector((state: RootState) => state.auth.error);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch: AppDispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -30,37 +34,16 @@ const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSign
     },
     validationSchema: signUpSchema,
     onSubmit: async (values) => {
-      try {
-        const response = await axios.post(
-          '/auth/register',
-          JSON.stringify({
-            password: values.password,
-            username: values.userName,
-            displayName: values.fullName
-          }),
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-
-        if (response.status === 201) {
-          onSetSignIn(false);
-          setError('');
-        }
-      } catch (error) {
-        const err = error as AxiosError;
-        if (!err?.response) {
-          setError('No server response.');
-        } else if (err.response.status === 409) {
-          setError('Username is already used by another user.');
-        } else {
-          setError('Signing up failed!');
-        }
-      }
+      dispatch(signUp(values));
     }
   });
+
+  useEffect(() => {
+    if (user) {
+      onSetSignIn(false);
+    }
+  }, [user]);
+
   const handleClickShowPassword = () => {
     setShowPassword(true);
   };
@@ -116,7 +99,7 @@ const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSign
             value={formik.values.password}
             onChange={formik.handleChange}
             error={formik.touched.password && Boolean(formik.errors.password)}
-            placeholder="Password"
+            placeholder="***************"
             fullWidth
             endAdornment={
               <InputAdornment position="end">
@@ -124,7 +107,7 @@ const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSign
                   aria-label="toggle password visibility"
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}>
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                  {showPassword ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
                 </IconButton>
               </InputAdornment>
             }
@@ -140,7 +123,7 @@ const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSign
             value={formik.values.confirmPassword}
             onChange={formik.handleChange}
             error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
-            placeholder="Confirm password"
+            placeholder="***************"
             fullWidth
             endAdornment={
               <InputAdornment position="end">
@@ -148,7 +131,7 @@ const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSign
                   aria-label="toggle password visibility"
                   onClick={handleClickShowConfirmPassword}
                   onMouseDown={handleMouseDownConfirmPassword}>
-                  {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                  {showConfirmPassword ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
                 </IconButton>
               </InputAdornment>
             }
@@ -161,7 +144,8 @@ const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSign
           type="submit"
           variant="contained"
           style={{
-            borderRadius: 0
+            borderRadius: 0,
+            marginTop: '0.8rem'
           }}>
           Sign Up
         </Button>

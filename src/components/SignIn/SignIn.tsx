@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
-import axios from '../../api/axios';
 
 import styles from './SignIn.module.scss';
 import {
@@ -11,18 +10,20 @@ import {
   InputAdornment,
   InputLabel
 } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { signInSchema } from '../../schemas';
 import { useDispatch } from 'react-redux';
-import { login } from '../../store/authentication-slice';
-import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { signIn } from '../../store/authentification-actions';
+import { useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store';
 
 const SignIn: React.FC<{ onSetSignUp: (value: boolean) => void }> = ({ onSetSignUp }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const dispatch = useDispatch();
+  const error = useSelector((state: RootState) => state.auth.error);
+  const token = useSelector((state: RootState) => state.auth.token);
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -32,40 +33,14 @@ const SignIn: React.FC<{ onSetSignUp: (value: boolean) => void }> = ({ onSetSign
     },
     validationSchema: signInSchema,
     onSubmit: async (values) => {
-      try {
-        const response = await axios.post(
-          '/auth/login',
-          JSON.stringify({
-            username: values.userName,
-            password: values.password
-          }),
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-
-        if (response.status === 201) {
-          dispatch(login(response.data));
-          console.log(response.data);
-          setError('');
-          navigate('/');
-        }
-      } catch (error) {
-        const err = error as AxiosError;
-        if (!err?.response) {
-          setError('No server response.');
-        } else if (err.response.status === 404) {
-          setError('User not found');
-        } else if (err.response.status === 401) {
-          setError('Invalid username or password');
-        } else {
-          setError('Signing in failed!');
-        }
-      }
+      dispatch(signIn(values));
     }
   });
+  useEffect(() => {
+    if (token) {
+      navigate('/');
+    }
+  }, [token]);
   const handleClickShowPassword = () => {
     setShowPassword(true);
   };
@@ -102,7 +77,7 @@ const SignIn: React.FC<{ onSetSignUp: (value: boolean) => void }> = ({ onSetSign
             value={formik.values.password}
             onChange={formik.handleChange}
             error={formik.touched.password && Boolean(formik.errors.password)}
-            placeholder="Password"
+            placeholder="***************"
             fullWidth
             endAdornment={
               <InputAdornment position="end">
@@ -110,7 +85,7 @@ const SignIn: React.FC<{ onSetSignUp: (value: boolean) => void }> = ({ onSetSign
                   aria-label="toggle password visibility"
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}>
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                  {showPassword ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
                 </IconButton>
               </InputAdornment>
             }
@@ -121,7 +96,8 @@ const SignIn: React.FC<{ onSetSignUp: (value: boolean) => void }> = ({ onSetSign
           type="submit"
           variant="contained"
           style={{
-            borderRadius: 0
+            borderRadius: 0,
+            marginTop: '0.8rem'
           }}>
           Sign In
         </Button>
