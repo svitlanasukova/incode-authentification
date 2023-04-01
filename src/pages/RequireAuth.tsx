@@ -1,14 +1,13 @@
-import React, { type ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import React from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
-const RequireAuth: React.FC<{
-  children: ReactNode;
-  isAthenticated: boolean;
-}> = ({ children, isAthenticated }) => {
-  if (!isAthenticated) {
-    return <Navigate to="/auth" replace />;
-  }
-  return <>{children}</>;
+const RequireAuth = () => {
+  const isAthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const location = useLocation();
+
+  return !isAthenticated ? <Navigate to="/auth" state={{ from: location }} replace /> : <Outlet />;
 };
 
 export default RequireAuth;

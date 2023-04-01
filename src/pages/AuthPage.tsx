@@ -8,7 +8,7 @@ const AuthPage = () => {
 
   return (
     <Layout className="authRoot">
-      {isSignUp ? <SignUp onSetIsSignUp={setIsSignUp} /> : <SignIn onSetIsSignUp={setIsSignUp} />}
+      {isSignUp ? <SignUp onSetSignIn={setIsSignUp} /> : <SignIn onSetSignUp={setIsSignUp} />}
     </Layout>
   );
 };

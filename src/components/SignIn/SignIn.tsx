@@ -15,11 +15,11 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { signInSchema } from '../../schemas';
 import { useDispatch } from 'react-redux';
-import { setToken } from '../../store/authentication-slice';
+import { login } from '../../store/authentication-slice';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const SignIn: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIsSignUp }) => {
+const SignIn: React.FC<{ onSetSignUp: (value: boolean) => void }> = ({ onSetSignUp }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ const SignIn: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIs
         );
 
         if (response.status === 201) {
-          dispatch(setToken(response.data));
+          dispatch(login(response.data));
           console.log(response.data);
           setError('');
           navigate('/');
@@ -73,7 +73,7 @@ const SignIn: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIs
     setShowPassword(false);
   };
   const setSignUpForm = () => {
-    onSetIsSignUp(true);
+    onSetSignUp(true);
   };
   return (
     <div className={styles.signin}>

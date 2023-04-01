@@ -15,14 +15,11 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { signUpSchema } from '../../schemas';
 import { AxiosError } from 'axios';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../../store/authentication-slice';
 
-const SignUp: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIsSignUp }) => {
+const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSignIn }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
-  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -49,8 +46,7 @@ const SignUp: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIs
         );
 
         if (response.status === 201) {
-          dispatch(setUser(response.data));
-          onSetIsSignUp(false);
+          onSetSignIn(false);
           setError('');
         }
       } catch (error) {
@@ -78,7 +74,7 @@ const SignUp: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIs
     setShowConfirmPassword(false);
   };
   const setSignInForm = () => {
-    onSetIsSignUp(false);
+    onSetSignIn(false);
   };
   return (
     <div className={styles.signup}>
