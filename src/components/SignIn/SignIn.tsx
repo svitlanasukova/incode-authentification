@@ -19,7 +19,7 @@ import { signIn } from '../../store/authentification-actions';
 import { useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 
-const SignIn: React.FC<{ onSetSignUp: (value: boolean) => void }> = ({ onSetSignUp }) => {
+const SignIn: React.FC<{ onSetSignUp: () => void }> = ({ onSetSignUp }) => {
   const [showPassword, setShowPassword] = useState(false);
   const error = useSelector((state: RootState) => state.auth.error);
   const token = useSelector((state: RootState) => state.auth.token);
@@ -46,9 +46,6 @@ const SignIn: React.FC<{ onSetSignUp: (value: boolean) => void }> = ({ onSetSign
   };
   const handleMouseDownPassword = () => {
     setShowPassword(false);
-  };
-  const setSignUpForm = () => {
-    onSetSignUp(true);
   };
   return (
     <div className={styles.signin}>
@@ -103,7 +100,7 @@ const SignIn: React.FC<{ onSetSignUp: (value: boolean) => void }> = ({ onSetSign
         </Button>
       </form>
       <p className={styles.changeFrom}>
-        I have an account. <span onClick={setSignUpForm}>Go to Sign in</span>
+        I have an account. <span onClick={onSetSignUp}>Go to Sign in</span>
       </p>
     </div>
   );

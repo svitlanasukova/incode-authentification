@@ -18,7 +18,7 @@ import { signUp } from '../../store/authentification-actions';
 import { useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 
-const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSignIn }) => {
+const SignUp: React.FC<{ onSetSignIn: () => void }> = ({ onSetSignIn }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const error = useSelector((state: RootState) => state.auth.error);
@@ -40,7 +40,7 @@ const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSign
 
   useEffect(() => {
     if (user) {
-      onSetSignIn(false);
+      onSetSignIn();
     }
   }, [user]);
 
@@ -55,9 +55,6 @@ const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSign
   };
   const handleMouseDownConfirmPassword = () => {
     setShowConfirmPassword(false);
-  };
-  const setSignInForm = () => {
-    onSetSignIn(false);
   };
   return (
     <div className={styles.signup}>
@@ -151,7 +148,7 @@ const SignUp: React.FC<{ onSetSignIn: (value: boolean) => void }> = ({ onSetSign
         </Button>
       </form>
       <p className={styles.changeFrom}>
-        Don’t have account yet? <span onClick={setSignInForm}>New Account</span>
+        Don’t have account yet? <span onClick={onSetSignIn}>New Account</span>
       </p>
     </div>
   );
