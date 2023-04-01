@@ -11,7 +11,7 @@ export const signUpSchema = yup.object().shape({
   userName: yup.string().min(3, 'Username must be at least 3 characters long').required('Required'),
   password: yup
     .string()
-    .min(5)
+    .min(8)
     .matches(passwordRules, { message: 'Please create a stronger password' })
     .required('Required'),
   confirmPassword: yup
@@ -21,10 +21,10 @@ export const signUpSchema = yup.object().shape({
 });
 
 export const signInSchema = yup.object().shape({
-  username: yup.string().min(3, 'Username must be at least 3 characters long').required('Required'),
+  userName: yup.string().min(3, 'Username must be at least 3 characters long').required('Required'),
   password: yup
     .string()
-    .min(5)
+    .min(8)
     .matches(passwordRules, { message: 'Please create a stronger password' })
     .required('Required')
 });

@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute: React.FC<{
+const RequireAuth: React.FC<{
   children: ReactNode;
   isAthenticated: boolean;
 }> = ({ children, isAthenticated }) => {
@@ -11,4 +11,4 @@ const ProtectedRoute: React.FC<{
   return <>{children}</>;
 };
 
-export default ProtectedRoute;
+export default RequireAuth;

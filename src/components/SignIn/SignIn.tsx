@@ -40,14 +40,14 @@ const SignIn: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIs
       <h1>Sign In</h1>
       <form autoComplete="off" onSubmit={formik.handleSubmit}>
         <div className={styles.field}>
-          <InputLabel htmlFor="userName">Username</InputLabel>
+          <InputLabel htmlFor="userName">User Name</InputLabel>
           <Input
             id="userName"
             name="userName"
             value={formik.values.userName}
             onChange={formik.handleChange}
             error={formik.touched.userName && Boolean(formik.errors.userName)}
-            placeholder="Username"
+            placeholder="Example Name"
             fullWidth
           />
           <FormHelperText>{formik.touched.userName && formik.errors.userName}</FormHelperText>

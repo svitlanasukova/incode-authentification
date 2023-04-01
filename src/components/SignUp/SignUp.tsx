@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { ErrorInfo, useState } from 'react';
 import { useFormik } from 'formik';
+import axios from '../../api/axios';
 
 import styles from './SignUp.module.scss';
 import {
@@ -13,10 +14,16 @@ import {
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { signUpSchema } from '../../schemas';
+import { AxiosError } from 'axios';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../store/authentication-slice';
 
 const SignUp: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIsSignUp }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState('');
+  const dispatch = useDispatch();
+
   const formik = useFormik({
     initialValues: {
       fullName: '',
@@ -25,8 +32,36 @@ const SignUp: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIs
       confirmPassword: ''
     },
     validationSchema: signUpSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post(
+          '/auth/register',
+          JSON.stringify({
+            password: values.password,
+            username: values.userName,
+            displayName: values.fullName
+          }),
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        if (response.status === 201) {
+          dispatch(setUser(response.data));
+          onSetIsSignUp(false);
+        }
+      } catch (error) {
+        const err = error as AxiosError;
+        if (!err?.response) {
+          setError('No server response.');
+        } else if (err.response.status === 409) {
+          setError('Username is already used by another user.');
+        } else {
+          setError('Signing up failed!');
+        }
+      }
     }
   });
   const handleClickShowPassword = () => {
@@ -47,29 +82,30 @@ const SignUp: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIs
   return (
     <div className={styles.signup}>
       <h1>Sign Up</h1>
+      {error && <p className={styles.error}>{error}</p>}
       <form autoComplete="off" onSubmit={formik.handleSubmit}>
         <div className={styles.field}>
-          <InputLabel htmlFor="fullName">Full name</InputLabel>
+          <InputLabel htmlFor="fullName">Full Name</InputLabel>
           <Input
             id="fullName"
             name="fullName"
             value={formik.values.fullName}
             onChange={formik.handleChange}
             error={formik.touched.fullName && Boolean(formik.errors.fullName)}
-            placeholder="Full name"
+            placeholder="Example Name"
             fullWidth
           />
           <FormHelperText>{formik.touched.fullName && formik.errors.fullName}</FormHelperText>
         </div>
         <div className={styles.field}>
-          <InputLabel htmlFor="userName">Username</InputLabel>
+          <InputLabel htmlFor="userName">User Name</InputLabel>
           <Input
             id="userName"
             name="userName"
             value={formik.values.userName}
             onChange={formik.handleChange}
             error={formik.touched.userName && Boolean(formik.errors.userName)}
-            placeholder="Username"
+            placeholder="Example123"
             fullWidth
           />
           <FormHelperText>{formik.touched.userName && formik.errors.userName}</FormHelperText>
@@ -99,7 +135,7 @@ const SignUp: React.FC<{ onSetIsSignUp: (value: boolean) => void }> = ({ onSetIs
           <FormHelperText>{formik.touched.password && formik.errors.password}</FormHelperText>
         </div>
         <div className={styles.field}>
-          <InputLabel htmlFor="confirmPassword">Confirm password</InputLabel>
+          <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
           <Input
             id="confirmPassword"
             type={showConfirmPassword ? 'text' : 'password'}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import ProtectedRoute from './pages/ProtectedRoute';
+import RequireAuth from './pages/RequireAuth';
 import { useSelector } from 'react-redux';
 import AuthPage from './pages/AuthPage';
 import { type RootState } from './store';
@@ -13,9 +13,9 @@ const App: React.FC = () => {
       <Route
         path="/"
         element={
-          <ProtectedRoute isAthenticated={isAthenticated}>
+          <RequireAuth isAthenticated={isAthenticated}>
             <HomePage />
-          </ProtectedRoute>
+          </RequireAuth>
         }
       />
       <Route path="/auth" element={<AuthPage />} />
