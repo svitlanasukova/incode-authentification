@@ -1,17 +1,20 @@
 import React from 'react';
 
 import { useDispatch } from 'react-redux';
-import { logout } from '../../store/authentication-slice';
 import { Button } from '@mui/material';
+import { userLogout } from '../../store/authentification-actions';
 
 import styles from './Home.module.scss';
 import home from '../../assets/icons/home.svg';
 import congratulations from '../../assets/icons/congratulations.svg';
+import { AppDispatch, RootState } from '../../store';
+import { useSelector } from 'react-redux';
 
 const Home = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
+  const error = useSelector((state: RootState) => state.auth.error);
   const logOut = () => {
-    dispatch(logout());
+    dispatch(userLogout());
   };
   return (
     <div className={styles.home}>
@@ -31,7 +34,8 @@ const Home = () => {
         }}>
         Log Out
       </Button>
-      <img src={home} alt="" />
+      {error && <p className={styles.error}>{error}</p>}
+      <img src={home} alt="" className={styles.homeImg} />
     </div>
   );
 };

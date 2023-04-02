@@ -22,7 +22,7 @@ import { AppDispatch, RootState } from '../../store';
 const SignIn: React.FC<{ onSetSignUp: () => void }> = ({ onSetSignUp }) => {
   const [showPassword, setShowPassword] = useState(false);
   const error = useSelector((state: RootState) => state.auth.error);
-  const token = useSelector((state: RootState) => state.auth.token);
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -37,10 +37,10 @@ const SignIn: React.FC<{ onSetSignUp: () => void }> = ({ onSetSignUp }) => {
     }
   });
   useEffect(() => {
-    if (token) {
+    if (isAuthenticated) {
       navigate('/');
     }
-  }, [token]);
+  }, [isAuthenticated]);
   const handleClickShowPassword = () => {
     setShowPassword(true);
   };

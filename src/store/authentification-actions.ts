@@ -1,6 +1,6 @@
 import { AppDispatch } from '.';
-import axios from '../api/axios';
-import { login, setError, setUser } from './authentication-slice';
+import { axiosPublic, axiosPrivate } from '../api/axios';
+import { login, logout, setError } from './authentication-slice';
 import { AxiosError } from 'axios';
 
 type signInValues = {
@@ -14,24 +14,48 @@ type signUpValues = {
   password: string;
 };
 
+export const signUp = (values: signUpValues) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const response = await axiosPublic.post(
+        '/auth/register',
+        JSON.stringify({
+          password: values.password,
+          username: values.userName,
+          displayName: values.fullName
+        })
+      );
+
+      if (response.status === 201) {
+        dispatch(setError(''));
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      if (!err?.response) {
+        dispatch(setError('No server response.'));
+      } else if (err.response.status === 409) {
+        dispatch(setError('Username is already used by another user.'));
+      } else {
+        dispatch(setError('Signing up failed!'));
+      }
+    }
+  };
+};
+
 export const signIn = (values: signInValues) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.post(
+      const response = await axiosPublic.post(
         '/auth/login',
         JSON.stringify({
           username: values.userName,
           password: values.password
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+        })
       );
 
       if (response.status === 201) {
-        dispatch(login(response.data));
+        localStorage.setItem('token', JSON.stringify(response.data.refreshToken));
+        dispatch(login(response.data.accessToken));
         dispatch(setError(''));
       }
     } catch (error) {
@@ -49,35 +73,50 @@ export const signIn = (values: signInValues) => {
   };
 };
 
-export const signUp = (values: signUpValues) => {
+export const userLogout = () => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.post(
-        '/auth/register',
-        JSON.stringify({
-          password: values.password,
-          username: values.userName,
-          displayName: values.fullName
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      const response = await axiosPrivate.get('/auth/logout');
 
-      if (response.status === 201) {
+      if (response.status === 200) {
+        dispatch(logout());
         dispatch(setError(''));
-        dispatch(setUser(response.data));
       }
     } catch (error) {
       const err = error as AxiosError;
       if (!err?.response) {
         dispatch(setError('No server response.'));
-      } else if (err.response.status === 409) {
-        dispatch(setError('Username is already used by another user.'));
+      } else if (err.response.status === 401) {
+        dispatch(setError('Unauthorized'));
       } else {
-        dispatch(setError('Signing up failed!'));
+        dispatch(setError('Logging out failed!'));
+      }
+    }
+  };
+};
+
+export const refreshToken = () => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const refreshToken = localStorage.getItem('token') || '';
+
+      if (refreshToken) {
+        const response = await axiosPublic.post('/auth/refresh', {
+          refreshToken: JSON.parse(refreshToken)
+        });
+        if (response.status === 201) {
+          dispatch(login(response.data.accessToken));
+          dispatch(setError(''));
+        }
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      if (!err?.response) {
+        dispatch(setError('No server response.'));
+      } else if (err.response.status === 403) {
+        dispatch(logout());
+      } else {
+        dispatch(setError('Refresh token failed!'));
       }
     }
   };

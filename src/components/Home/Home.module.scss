@@ -13,10 +13,20 @@
     margin-top: 0;
     margin-bottom: 48px;
     display: inline;
+    @media (max-width: 768px) {
+      font-size: 28px;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 425px) {
+      font-size: 22px;
+    }
     img {
       position: absolute;
       bottom: 0;
       right: -118px;
+      @media (max-width: 768px) {
+        display: none;
+      }
     }
   }
   p {
@@ -33,5 +43,9 @@
   }
   .homeImg {
     margin-bottom: 41px;
+  }
+  .error {
+    margin-bottom: 1rem;
+    color: red;
   }
 }
