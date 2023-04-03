@@ -6,6 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import './index.css';
 
 import App from './App';
+
 import store from './store';
 import theme from './theme';
 import CssBaseline from '@mui/material/CssBaseline';

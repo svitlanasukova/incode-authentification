@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 
-import styles from './SignUp.module.scss';
 import {
   Button,
   FormHelperText,
@@ -12,18 +12,19 @@ import {
 } from '@mui/material';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { signUpSchema } from '../../schemas';
-import { useDispatch } from 'react-redux';
+
 import { signUp } from '../../store/authentification-actions';
-import { useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store';
+import { AppDispatch, RootState } from 'store';
+import { signUpSchema } from '../../schemas';
+
+import styles from './styles.module.scss';
 
 const SignUp: React.FC<{ onSetSignIn: () => void }> = ({ onSetSignIn }) => {
+  const dispatch: AppDispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const error = useSelector((state: RootState) => state.auth.error);
-  const user = useSelector((state: RootState) => state.auth.user);
-  const dispatch: AppDispatch = useDispatch();
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   const formik = useFormik({
     initialValues: {
@@ -39,10 +40,10 @@ const SignUp: React.FC<{ onSetSignIn: () => void }> = ({ onSetSignIn }) => {
   });
 
   useEffect(() => {
-    if (user) {
+    if (isAuthenticated) {
       onSetSignIn();
     }
-  }, [user]);
+  }, [isAuthenticated]);
 
   const handleClickShowPassword = () => {
     setShowPassword(true);
@@ -148,7 +149,7 @@ const SignUp: React.FC<{ onSetSignIn: () => void }> = ({ onSetSignIn }) => {
         </Button>
       </form>
       <p className={styles.changeFrom}>
-        Don’t have account yet? <span onClick={onSetSignIn}>New Account</span>
+        I have an account. <span onClick={onSetSignIn}>Go to Sign in</span>
       </p>
     </div>
   );

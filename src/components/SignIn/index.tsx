@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-import styles from './SignIn.module.scss';
 import {
   Button,
   FormHelperText,
@@ -10,14 +11,16 @@ import {
   InputAdornment,
   InputLabel
 } from '@mui/material';
+
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+
 import { signInSchema } from '../../schemas';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { signIn } from '../../store/authentification-actions';
-import { useSelector } from 'react-redux';
+
 import { AppDispatch, RootState } from '../../store';
+import { signIn } from '../../store/authentification-actions';
+
+import styles from './styles.module.scss';
 
 const SignIn: React.FC<{ onSetSignUp: () => void }> = ({ onSetSignUp }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -100,7 +103,7 @@ const SignIn: React.FC<{ onSetSignUp: () => void }> = ({ onSetSignUp }) => {
         </Button>
       </form>
       <p className={styles.changeFrom}>
-        I have an account. <span onClick={onSetSignUp}>Go to Sign in</span>
+        Don’t have account yet? <span onClick={onSetSignUp}>New Account</span>
       </p>
     </div>
   );

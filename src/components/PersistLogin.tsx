@@ -3,8 +3,8 @@ import { Outlet } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { refreshToken } from '../store/authentification-actions';
 import { useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store';
-import Layout from '../components/Layout/Layout';
+import { AppDispatch, RootState } from 'store';
+import Layout from './Layout';
 
 const PersistLogin = () => {
   const isAthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -13,7 +13,6 @@ const PersistLogin = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token') || '';
-
     if (isAthenticated) {
       setIsLoading(false);
     } else {

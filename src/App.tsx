@@ -1,15 +1,15 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import RequireAuth from './pages/RequireAuth';
+import AuthGuard from './components/AuthGuard';
 import AuthPage from './pages/AuthPage';
-import PersistLogin from './pages/PersistLogin';
+import PersistLogin from './components/PersistLogin';
 
 const App = () => {
   return (
     <Routes>
       <Route element={<PersistLogin />}>
-        <Route element={<RequireAuth />}>
+        <Route element={<AuthGuard />}>
           <Route path="/" element={<HomePage />} />
         </Route>
       </Route>

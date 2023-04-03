@@ -1,14 +1,13 @@
 import React from 'react';
-
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@mui/material';
-import { userLogout } from '../../store/authentification-actions';
 
-import styles from './Home.module.scss';
+import { userLogout } from '../../store/authentification-actions';
+import { AppDispatch, RootState } from 'store';
+
+import styles from './styles.module.scss';
 import home from '../../assets/icons/home.svg';
 import congratulations from '../../assets/icons/congratulations.svg';
-import { AppDispatch, RootState } from '../../store';
-import { useSelector } from 'react-redux';
 
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
