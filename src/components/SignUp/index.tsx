@@ -24,7 +24,6 @@ const SignUp: React.FC<{ onSetSignIn: () => void }> = ({ onSetSignIn }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const error = useSelector((state: RootState) => state.auth.error);
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   const formik = useFormik({
     initialValues: {
@@ -36,14 +35,9 @@ const SignUp: React.FC<{ onSetSignIn: () => void }> = ({ onSetSignIn }) => {
     validationSchema: signUpSchema,
     onSubmit: async (values) => {
       dispatch(signUp(values));
+      if (!error) onSetSignIn();
     }
   });
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      onSetSignIn();
-    }
-  }, [isAuthenticated]);
 
   const handleClickShowPassword = () => {
     setShowPassword(true);

@@ -1,6 +1,6 @@
 import { AppDispatch } from '.';
 import { axiosPublic, axiosPrivate } from '../api/axios';
-import { login, logout, setError } from './authentification-slice';
+import { login, logout, setError, setUser } from './authentification-slice';
 import { AxiosError } from 'axios';
 
 type signInValues = {
@@ -27,6 +27,7 @@ export const signUp = (values: signUpValues) => {
       );
 
       if (response.status === 201) {
+        dispatch(setUser(response.data));
         dispatch(setError(''));
       }
     } catch (error) {
