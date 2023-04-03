@@ -98,7 +98,7 @@ export const userLogout = () => {
 export const refreshToken = () => {
   return async (dispatch: AppDispatch) => {
     try {
-      const refreshToken = localStorage.getItem('token') || '';
+      const refreshToken = localStorage.getItem('token');
 
       if (refreshToken) {
         const response = await axiosPublic.post('/auth/refresh', {
