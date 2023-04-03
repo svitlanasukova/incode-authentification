@@ -1,6 +1,6 @@
 import { AppDispatch } from '.';
 import { axiosPublic, axiosPrivate } from '../api/axios';
-import { login, logout, setError } from './authentication-slice';
+import { login, logout, setError } from './authentification-slice';
 import { AxiosError } from 'axios';
 
 type signInValues = {

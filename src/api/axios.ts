@@ -1,6 +1,6 @@
 import axios, { Axios } from 'axios';
 import store from '../store';
-import { login } from '../store/authentication-slice';
+import { login } from '../store/authentification-slice';
 
 export const BASE_URL = 'https://expa.fly.dev';
 
