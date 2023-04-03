@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { refreshToken } from '../store/authentification-actions';
 import { useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
+import Layout from '../components/Layout/Layout';
 
 const PersistLogin = () => {
   const isAthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -23,7 +24,13 @@ const PersistLogin = () => {
     }
   }, [isAthenticated]);
 
-  return isLoading ? <p>Loading ...</p> : <Outlet />;
+  return isLoading ? (
+    <Layout>
+      <p>Loading ...</p>
+    </Layout>
+  ) : (
+    <Outlet />
+  );
 };
 
 export default PersistLogin;

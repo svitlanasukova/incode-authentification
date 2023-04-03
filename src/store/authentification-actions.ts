@@ -108,6 +108,8 @@ export const refreshToken = () => {
           dispatch(login(response.data.accessToken));
           dispatch(setError(''));
         }
+      } else {
+        dispatch(logout());
       }
     } catch (error) {
       const err = error as AxiosError;
